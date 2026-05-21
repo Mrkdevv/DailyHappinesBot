@@ -10,7 +10,7 @@ async def init_db():
 
     await cursor.execute("""CREATE TABLE IF NOT EXISTS users (
         user_id INTEGER PRIMARY KEY,
-        massage_time TEXT
+        message_time TEXT
         )
         """)
     await cursor.execute("""CREATE TABLE IF NOT EXISTS mood_history (
@@ -27,6 +27,11 @@ async def init_db():
     await cursor.close()
     await db.close()
 
+async def add_user(user_id: int):
+    async with aiosqlite.connect('TelegramDateBase.db') as db:
+         async with db.cursor() as cursor:
+            await cursor.execute("INSERT OR IGNORE INTO users (user_id , message_time) VALUES (?, NULL) ",(user_id,) )
+            await db.commit()
 
 if __name__ == "__main__":
     asyncio.run(init_db())
