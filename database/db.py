@@ -33,5 +33,11 @@ async def add_user(user_id: int):
             await cursor.execute("INSERT OR IGNORE INTO users (user_id , message_time) VALUES (?, NULL) ",(user_id,) )
             await db.commit()
 
+async def add_time(user_id: int , time_str: str):
+    async with aiosqlite.connect('TelegramDateBase.db') as db:
+        async with db.cursor() as cursor:
+            await cursor.execute("UPDATE users SET message_time = ? where user_id = ?",(time_str,user_id) )
+            await db.commit()
+
 if __name__ == "__main__":
     asyncio.run(init_db())

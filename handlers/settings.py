@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, CommandStart, callback_data
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from database.db import add_user
+from database.db import add_user , add_time
 import asyncio
 
 router = Router()
@@ -24,10 +24,14 @@ async def settings(message: Message):
 
 @router.callback_query(F.data.startswith(f"set_time:"))
 async def process_time_selection(callback: CallbackQuery):
-    selected_time = callback_data.split(":")[1]
+    selected_time = callback.data.split(":")[1]
+    user_id = callback.from_user.id
+    await add_time(user_id , selected_time)
+
     await callback.answer()
 
+
     await callback.message.edit_text(
-        f"✅ Время успешно установлено на **{selected_time}**!\n"
+        f"✅ Время успешно установлено на {selected_time}:00!\n"
         f"Каждый день в это время я буду спрашивать тебя о настроении."
     )
